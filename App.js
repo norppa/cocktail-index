@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
 import initialData from './constants/intial_data'
+import Cocktail from './components/Cocktail'
 
 export default function App() {
   const [data, setData] = useState(initialData)
@@ -15,7 +16,7 @@ export default function App() {
         data={data}
         renderItem={({ item, index }) => {
           return (
-            <Text>{item.name}</Text>
+            <Cocktail cocktail={item} />
           )
         }}
       />
