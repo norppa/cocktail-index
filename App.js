@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+
+import initialData from './constants/intial_data'
 
 export default function App() {
+  const [data, setData] = useState(initialData)
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={styles.main}>
+      <Text>Cocktail Index</Text>
+
+      <FlatList
+        style={styles.list}
+        data={data}
+        renderItem={({ item, index }) => {
+          return (
+            <Text>{item.name}</Text>
+          )
+        }}
+      />
+
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  main: {
+    marginHorizontal: '5%',
+    marginTop: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-});
+  list: {
+    width: '100%',
+  }
+})
