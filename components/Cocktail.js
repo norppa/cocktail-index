@@ -10,6 +10,7 @@ const Cocktail = props => {
             setShowFullInfo(false)
         } else {
             setShowFullInfo(true)
+            props.scrollTo(props.index)
         }
     }
 
