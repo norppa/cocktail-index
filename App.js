@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList } from 'react-native';
+import { StyleSheet, View, Button, Text, TextInput, FlatList } from 'react-native';
 
 import initialData from './constants/intial_data'
 import Cocktail from './components/Cocktail'
+import AddCocktailModal from './components/AddCocktailModal';
 
 export default function App() {
-  const [data, setData] = useState(initialData)
+  const [cocktails, setCocktails] = useState(initialData)
   const [searchInput, setSearchInput] = useState('')
+  const [showAddCocktail, setShowAddCocktail] = useState(false)
 
   const scrollTo = (index) => {
     console.log('scrollTo called', { index })
     _flatList.scrollToIndex({ index })
+  }
+
+  const saveCocktail = (cocktail) => {
+    const id = 'cocktail_' + cocktails.length
+    setCocktails(cocktails => [...cocktails, { ...cocktail, id }])
+    setShowAddCocktail(false)
   }
 
   return (
@@ -19,12 +27,15 @@ export default function App() {
 
       <View style={styles.controls}>
         <TextInput style={styles.input} onChangeText={setSearchInput} value={searchInput} />
+        <View style={styles.addButton}>
+          <Button title="new" onPress={setShowAddCocktail.bind(this, true)} />
+        </View>
       </View>
 
       <FlatList
         ref={flatList => _flatList = flatList}
         style={styles.list}
-        data={data}
+        data={cocktails}
         renderItem={({ item, index }) => {
           if (!item.name.toLowerCase().includes(searchInput.toLowerCase())) {
             return null
@@ -37,6 +48,11 @@ export default function App() {
           )
         }}
       />
+
+      <AddCocktailModal
+        show={showAddCocktail}
+        close={setShowAddCocktail.bind(this, false)}
+        save={saveCocktail} />
 
     </View>
   )
@@ -53,6 +69,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 10
+  },
+  addButton: {
+    marginLeft: 20,
+    borderColor: 'red'
   },
   input: {
     width: '60%',
