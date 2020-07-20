@@ -21,6 +21,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "A simple tool to manage your favourite cocktail recipes",
+    "githubUrl": "https://github.com/norppa/cocktail-index"
   }
 }
