@@ -1,114 +1,61 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Button, Text, TextInput, FlatList, AsyncStorage } from 'react-native';
+import { Text, AsyncStorage } from 'react-native';
 
 
-import initialData from './constants/intial_data'
-import Cocktail from './components/Cocktail'
-import AddCocktailModal from './components/AddCocktailModal';
+import Viewer from './components/viewer/Viewer'
+import {
+  getCocktails,
+  readLocalStore,
+  writeLocalStore
+} from './rest'
+
 
 export default function App() {
+  const [error, setError] = useState(null)
   const [cocktails, setCocktails] = useState([])
-  const [searchInput, setSearchInput] = useState('')
-  const [showAddCocktail, setShowAddCocktail] = useState(false)
-  const STORAGE_KEY = '@cocktails'
+  const [selected, setSelected] = useState(null)
+  const [editorView, setEditorView] = useState(false)
 
-  const saveCocktailData = async (cocktails) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(cocktails))
-      console.log('data saved')
-    } catch (e) {
-      aleconsole.log('Failed to save the data to the storage' + e)
+  const initialize = async () => {
+    let cocktails = await getCocktails()
+    if (cocktails.error) {
+      console.log('could not read database (' + cocktails.error + '), using local storage')
+      cocktails = readLocalStore()
+    } else {
+      writeLocalStore(cocktails)
     }
-  }
+    setCocktails(cocktails)
 
-  const readCocktailData = async () => {
-    try {
-      const cocktails = await AsyncStorage.getItem(STORAGE_KEY)
-  
-      if (cocktails !== null) {
-        setCocktails(JSON.parse(cocktails))
-      }
-    } catch (e) {
-      console.log('Failed to fetch the data from storage')
-    }
   }
 
   React.useEffect(() => {
-    console.log('effect, read data')
-    readCocktailData()
+    initialize()
   }, [])
 
-  const scrollTo = (index) => {
-    console.log('scrollTo called', { index })
-    _flatList.scrollToIndex({ index })
+  const select = (index) => {
+    if (selected == index) {
+      setSelected(null)
+    } else {
+      setSelected(index)
+    }
   }
 
-  const saveCocktail = (cocktail) => {
-    const id = 'cocktail_' + cocktails.length
-    const newCocktails = [...cocktails, { ...cocktail, id: 'cocktail_' + cocktails.length }]
-    setCocktails(newCocktails)
-    saveCocktailData(newCocktails)
-    setShowAddCocktail(false)
+  const closeEditorView = (withReload) => {
+    if (withReload) {
+      initializeCocktails()
+    }
+    setEditorView(false)
   }
 
-  return (
-    <View style={styles.main}>
-      <Text>Cocktail Index</Text>
+  const openEditorView = () => {
+    setEditorView(true)
+  }
 
-      <View style={styles.controls}>
-        <TextInput style={styles.input} onChangeText={setSearchInput} value={searchInput} />
-        <View style={styles.addButton}>
-          <Button title="new" onPress={setShowAddCocktail.bind(this, true)} />
-        </View>
-      </View>
 
-      <FlatList
-        ref={flatList => _flatList = flatList}
-        style={styles.list}
-        data={cocktails}
-        renderItem={({ item, index }) => {
-          if (!item.name.toLowerCase().includes(searchInput.toLowerCase())) {
-            return null
-          }
-          return (
-            <Cocktail
-              cocktail={item}
-              index={index}
-              scrollTo={scrollTo} />
-          )
-        }}
-      />
-
-      <AddCocktailModal
-        show={showAddCocktail}
-        close={setShowAddCocktail.bind(this, false)}
-        save={saveCocktail} />
-
-    </View>
-  )
+  console.log('cocktails', cocktails)
+  return <Viewer cocktails={cocktails}
+    selectedIdx={selected}
+    select={select}
+    openEditor={openEditorView}
+  />
 }
-
-const styles = StyleSheet.create({
-  main: {
-    marginHorizontal: '5%',
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  controls: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10
-  },
-  addButton: {
-    marginLeft: 20,
-    borderColor: 'red'
-  },
-  input: {
-    width: '60%',
-    borderWidth: 1
-  },
-  list: {
-    width: '100%',
-  }
-})
