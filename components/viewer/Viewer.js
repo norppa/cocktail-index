@@ -31,8 +31,9 @@ const Viewer = (props) => {
           return (
             <Cocktail cocktail={item}
               index={index}
+              selected={index == props.selected}
               scrollTo={scrollTo}
-              select={() => console.log('select')} />
+              select={() => props.select(index)} />
           )
         }}
         keyExtractor={(item, index) => index + item.name}

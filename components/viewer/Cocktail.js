@@ -20,10 +20,7 @@ const Cocktail = (props) => {
     let [fontsLoaded] = useFonts({ CherryCreamSoda_400Regular, Alegreya_500Medium, Alegreya_700Bold })
 
     const handleClick = () => {
-        if (props.selected && !showAdditionalInfo) {
-            // impossible by logic
-            setShowAdditionalInfo(true)
-        } else if (props.selected && showAdditionalInfo) {
+        if (props.selected && showAdditionalInfo) {
             setShowAdditionalInfo(false)
             props.select()
         } else if (!props.selected && !showAdditionalInfo) {
@@ -31,7 +28,9 @@ const Cocktail = (props) => {
             props.select()
         } else if (!props.selected && showAdditionalInfo) {
             setShowAdditionalInfo(false)
-            props.select(true)
+        } else if (props.selected && !showAdditionalInfo) {
+            // impossible by logic
+            setShowAdditionalInfo(true)
         }
     }
     // const handleClick = () => {
@@ -105,7 +104,7 @@ const Cocktail = (props) => {
 
     return (
         <TouchableWithoutFeedback onPress={handleClick}>
-            <View style={styles.itemCard}>
+            <View style={[styles.itemCard, props.selected ? styles.selected : null]}>
                 <Text style={styles.name}>{props.cocktail.name}</Text>
                 <AdditionalInfo />
             </View>
@@ -160,6 +159,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Alegreya_700Bold',
         fontSize: 18
 
+    },
+    selected: {
+        borderWidth: 3
     }
 
 })

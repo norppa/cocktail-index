@@ -50,11 +50,9 @@ export default function App() {
   const openEditorView = () => {
     setEditorView(true)
   }
-
-
-  console.log('cocktails', cocktails)
+  
   return <Viewer cocktails={cocktails}
-    selectedIdx={selected}
+    selected={selected}
     select={select}
     openEditor={openEditorView}
   />
