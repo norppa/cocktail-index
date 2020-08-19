@@ -16,7 +16,7 @@ const Viewer = (props) => {
     <View style={styles.viewer}>
       <View style={styles.controls}>
         <View style={styles.textInput}>
-          <TextInput type="text" value={searchInput} onChange={setSearchInput} />
+          <TextInput type="text" value={searchInput} onChange={event => setSearchInput(event.nativeEvent.text)} />
         </View>
         <MaterialCommunityIcons name="square-edit-outline" size={32} color="black" />
       </View>
@@ -29,10 +29,10 @@ const Viewer = (props) => {
             return null
           }
           return (
-            <Cocktail cocktail={item} 
-            index={index} 
-            scrollTo={scrollTo}
-            select={() => console.log('select')} />
+            <Cocktail cocktail={item}
+              index={index}
+              scrollTo={scrollTo}
+              select={() => console.log('select')} />
           )
         }}
         keyExtractor={(item, index) => index + item.name}
