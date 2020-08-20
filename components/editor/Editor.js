@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, Modal, FlatList } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList } from 'react-native'
 import { useFonts, CherryCreamSoda_400Regular } from '@expo-google-fonts/cherry-cream-soda'
 import {
     Alegreya_400Regular,
@@ -16,6 +16,7 @@ import {
 
 
 import Input from './Input'
+import Dialog from './Dialog'
 
 import {
     saveNewIngredient,
@@ -39,8 +40,7 @@ const Editor = (props) => {
     const [glass, setGlass] = useState(null)
     const [info, setInfo] = useState('')
 
-    const [methodModalVisible, setMethodModalVisible] = useState(false)
-
+    const [methodDialogVisible, setMethodDialogVisible] = useState(false)
 
     let [fontsLoaded] = useFonts({ CherryCreamSoda_400Regular, Alegreya_500Medium, Alegreya_700Bold })
 
@@ -175,7 +175,7 @@ const Editor = (props) => {
 
     const selectMethod = (method) => () => {
         setMethod(method)
-        setMethodModalVisible(false)
+        setMethodDialogVisible(false)
     }
 
     return (
@@ -188,37 +188,23 @@ const Editor = (props) => {
             <TextInput style={styles.input} value={garnish} onChange={setGarnish} />
 
             <Text style={styles.header}>Method</Text>
-            <TouchableWithoutFeedback onPress={setMethodModalVisible.bind(this, true)}           >
+            <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}           >
                 <Text style={styles.input}>{method}</Text>
             </TouchableWithoutFeedback>
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={methodModalVisible}
-                onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                }}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modal}>
-                        <FlatList
-                            data={availableMethods}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <TouchableWithoutFeedback onPress={selectMethod(item)}>
-                                        <Text style={[styles.input, styles.modalInput]}>{item}</Text>
-
-                                    </TouchableWithoutFeedback>
-                                )
-                            }}
-                            keyExtractor={(item, index) => index + item}
-                        />
-                    </View>
-
-                </View>
-
-            </Modal>
+            <Dialog visible={methodDialogVisible}>
+                <FlatList
+                    data={availableMethods}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <TouchableWithoutFeedback onPress={selectMethod(item)}>
+                                <Text style={[styles.input, styles.modalInput]}>{item}</Text>
+                            </TouchableWithoutFeedback>
+                        )
+                    }}
+                    keyExtractor={(item, index) => index + item}
+                />
+            </Dialog>
 
             <Text style={styles.header}>Information</Text>
             <TextInput style={styles.input}
@@ -309,6 +295,10 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         marginLeft: 30
     },
+    modalInput: {
+        marginLeft: 0,
+        marginTop: 5
+    },
 
     buttons: {
         marginTop: 20,
@@ -326,27 +316,6 @@ const styles = StyleSheet.create({
         fontFamily: 'CherryCreamSoda_400Regular',
         fontSize: 24
     },
-    modalContainer: {
-        width: '100%',
-        height: '100%',
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    },
-    modal: {
-        borderWidth: 2,
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: 'white',
-        opacity: 1,
-        minWidth: '50%',
-        minHeight: '50%'
-
-    },
-    modalInput: {
-        marginLeft: 0,
-        marginTop: 5
-    }
 
 
 
