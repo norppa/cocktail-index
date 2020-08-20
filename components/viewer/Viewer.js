@@ -18,7 +18,7 @@ const Viewer = (props) => {
         <View style={styles.textInput}>
           <TextInput type="text" value={searchInput} onChange={event => setSearchInput(event.nativeEvent.text)} />
         </View>
-        <MaterialCommunityIcons name="square-edit-outline" size={32} color="black" />
+        <MaterialCommunityIcons name="square-edit-outline" size={32} color="black" onPress={props.openEditor} />
       </View>
 
       <FlatList

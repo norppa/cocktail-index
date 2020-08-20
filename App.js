@@ -3,6 +3,7 @@ import { Text, AsyncStorage } from 'react-native';
 
 
 import Viewer from './components/viewer/Viewer'
+import Editor from './components/editor/Editor'
 import {
   getCocktails,
   readLocalStore,
@@ -49,6 +50,12 @@ export default function App() {
 
   const openEditorView = () => {
     setEditorView(true)
+  }
+
+  if (editorView) {
+    return <Editor cocktail={cocktails[selected]} 
+      closeEditor={closeEditorView}
+    />
   }
   
   return <Viewer cocktails={cocktails}
