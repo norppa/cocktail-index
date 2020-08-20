@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList, Image } from 'react-native'
 import { useFonts, CherryCreamSoda_400Regular } from '@expo-google-fonts/cherry-cream-soda'
 import {
     Alegreya_400Regular,
@@ -41,6 +41,7 @@ const Editor = (props) => {
     const [info, setInfo] = useState('')
 
     const [methodDialogVisible, setMethodDialogVisible] = useState(false)
+    const [glassDialogVisible, setGlassDialogVisible] = useState(false)
 
     let [fontsLoaded] = useFonts({ CherryCreamSoda_400Regular, Alegreya_500Medium, Alegreya_700Bold })
 
@@ -173,9 +174,26 @@ const Editor = (props) => {
         )
     }
 
+    const GlassCard = (props) => {
+        return (
+            <TouchableWithoutFeedback onPress={props.select}>
+                <View style={[props.style, styles.glassCard]}>
+                    <Image style={styles.glassImg} source={images[props.glass]} />
+                    <Text style={styles.text}>{props.glass}</Text>
+                </View>
+            </TouchableWithoutFeedback>
+        )
+
+    }
+
     const selectMethod = (method) => () => {
         setMethod(method)
         setMethodDialogVisible(false)
+    }
+
+    const selectGlass = (glass) => () => {
+        setGlass(glass)
+        setGlassDialogVisible(false)
     }
 
     return (
@@ -188,8 +206,9 @@ const Editor = (props) => {
             <TextInput style={styles.input} value={garnish} onChange={setGarnish} />
 
             <Text style={styles.header}>Method</Text>
-            <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}           >
+            <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}>
                 <Text style={styles.input}>{method}</Text>
+
             </TouchableWithoutFeedback>
 
             <Dialog visible={methodDialogVisible}>
@@ -206,6 +225,18 @@ const Editor = (props) => {
                 />
             </Dialog>
 
+            <Text style={styles.header}>Glassware</Text>
+            <GlassCard style={styles.input} select={setGlassDialogVisible.bind(this, true)} glass={glass} />
+
+            <Dialog visible={glassDialogVisible}>
+                <FlatList
+                    data={availableGlasses}
+                    renderItem={({ item, index }) => <GlassCard select={selectGlass(item)} glass={item} />}
+                    keyExtractor={(item, index) => index + item}
+                />
+            </Dialog>
+
+
             <Text style={styles.header}>Information</Text>
             <TextInput style={styles.input}
                 value={info}
@@ -216,7 +247,6 @@ const Editor = (props) => {
             />
 
             <View style={styles.buttons}>
-
                 <Button title="Save" onPress={save} />
                 <Button title="Cancel" onPress={cancel} />
             </View>
@@ -245,26 +275,6 @@ const Editor = (props) => {
                         )
                     })}
                 </div>
-            </Input>
-
-
-
-            <Input name="Method">
-                <select value={method} onChange={setters.method}>
-                    {availableMethods.map((method, i) => <option key={i} value={method}>{method}</option>)}
-                </select>
-            </Input>
-
-            <Input name="Glassware">
-                {availableGlasses.map((availableGlass, i) => {
-                    return (
-                        <img key={i}
-                            className={`${styles.glassImg} ${availableGlass == glass ? styles.selectedGlassImg : null}`}
-                            src={images[availableGlass]}
-                            onClick={setters.glass(availableGlass)}
-                        />
-                    )
-                })}
             </Input> */}
         </View >
     )
@@ -278,6 +288,10 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginLeft: 10,
         marginRight: 10
+    },
+    text: {
+        fontFamily: 'Alegreya_500Medium',
+        fontSize: 20,
     },
     header: {
         fontFamily: 'CherryCreamSoda_400Regular',
@@ -297,7 +311,9 @@ const styles = StyleSheet.create({
     },
     modalInput: {
         marginLeft: 0,
-        marginTop: 5
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
 
     buttons: {
@@ -315,6 +331,17 @@ const styles = StyleSheet.create({
     buttonText: {
         fontFamily: 'CherryCreamSoda_400Regular',
         fontSize: 24
+    },
+    glassImg: {
+        width: 50,
+        height: 50,
+        resizeMode: 'contain',
+        marginRight: 10,
+    },
+    glassCard: {
+        borderWidth: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 
 
