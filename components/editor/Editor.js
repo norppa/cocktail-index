@@ -15,6 +15,7 @@ import {
 } from '@expo-google-fonts/alegreya'
 
 
+import IngredientInput from './IngredientInput'
 import Input from './Input'
 import Dialog from './Dialog'
 
@@ -74,12 +75,12 @@ const Editor = (props) => {
     /*
     *  Ingredient list has always an empty item at the end. 
     */
-    const changeIngredient = (index, replacement) => {
-        let newIngredients = ingredients.map((item, i) => {
-            if (i !== index) {
-                return item
+    const setIngredient = (index, parameter, value) => {
+        let newIngredients = ingredients.map((ingredient, i) => {
+            if (i == index) {
+                return { ...ingredient, [parameter]: value }
             } else {
-                return { ...item, ...replacement }
+                return ingredient
             }
         })
 
@@ -97,14 +98,6 @@ const Editor = (props) => {
         }
 
         setIngredients(newIngredients)
-    }
-
-    const onIngredientAmountChange = (index) => (event) => {
-        changeIngredient(index, { amount: event.target.value })
-    }
-
-    const onIngredientNameChange = (index) => (replacement) => {
-        changeIngredient(index, replacement)
     }
 
     const addIngredient = async (index) => {
@@ -151,14 +144,6 @@ const Editor = (props) => {
         props.closeEditor(false)
     }
 
-    const setters = {
-        name: (event) => setName(event.target.value),
-        garnish: (event) => setGarnish(event.target.value),
-        method: (event) => setMethod(event.target.value),
-        glass: (type) => () => setGlass(type),
-        info: (event) => setInfo(event.target.value)
-    }
-
     if (!fontsLoaded) {
         return <Text>loading fonts...</Text>
     }
@@ -183,8 +168,9 @@ const Editor = (props) => {
                 </View>
             </TouchableWithoutFeedback>
         )
-
     }
+
+
 
     const selectMethod = (method) => () => {
         setMethod(method)
@@ -200,59 +186,17 @@ const Editor = (props) => {
         <View style={styles.editor}>
 
             <Text style={styles.header}>Name</Text>
-            <TextInput style={styles.input} value={name} onChange={setName} />
+            <TextInput style={[styles.inputArea, styles.input]} value={name} onChange={setName} />
 
-            <Text style={styles.header}>Garnish</Text>
-            <TextInput style={styles.input} value={garnish} onChange={setGarnish} />
-
-            <Text style={styles.header}>Method</Text>
-            <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}>
-                <Text style={styles.input}>{method}</Text>
-
-            </TouchableWithoutFeedback>
-
-            <Dialog visible={methodDialogVisible}>
-                <FlatList
-                    data={availableMethods}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <TouchableWithoutFeedback onPress={selectMethod(item)}>
-                                <Text style={[styles.input, styles.modalInput]}>{item}</Text>
-                            </TouchableWithoutFeedback>
-                        )
-                    }}
-                    keyExtractor={(item, index) => index + item}
-                />
-            </Dialog>
-
-            <Text style={styles.header}>Glassware</Text>
-            <GlassCard style={styles.input} select={setGlassDialogVisible.bind(this, true)} glass={glass} />
-
-            <Dialog visible={glassDialogVisible}>
-                <FlatList
-                    data={availableGlasses}
-                    renderItem={({ item, index }) => <GlassCard select={selectGlass(item)} glass={item} />}
-                    keyExtractor={(item, index) => index + item}
-                />
-            </Dialog>
-
-
-            <Text style={styles.header}>Information</Text>
-            <TextInput style={styles.input}
-                value={info}
-                multiline={true}
-                style={[styles.input, { textAlignVertical: 'top' }]}
-                numberOfLines={4}
-                onChange={setInfo}
+            <Text style={styles.header}>Ingredients</Text>
+            <FlatList
+                style={styles.inputArea}
+                data={ingredients}
+                keyExtractor={(item, index) => item.id + '_ingredient_' + index}
+                renderItem={listItem => <IngredientInput style={styles.input} item={listItem} onChange={setIngredient} />}
             />
 
-            <View style={styles.buttons}>
-                <Button title="Save" onPress={save} />
-                <Button title="Cancel" onPress={cancel} />
-            </View>
-
-            {/* <Input name="Ingredients">
-                <div>
+            {/* 
                     {ingredients.map((ingredient, index) => {
                         const { name, amount, isNew } = ingredient
                         return (
@@ -274,8 +218,57 @@ const Editor = (props) => {
                             </div>
                         )
                     })}
-                </div>
-            </Input> */}
+             */}
+
+            <Text style={styles.header}>Garnish</Text>
+            <TextInput style={[styles.inputArea, styles.input]} value={garnish} onChange={setGarnish} />
+
+            <Text style={styles.header}>Method</Text>
+            <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}>
+                <Text style={[styles.inputArea, styles.input]}>{method}</Text>
+            </TouchableWithoutFeedback>
+
+            <Dialog visible={methodDialogVisible}>
+                <FlatList
+                    data={availableMethods}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <TouchableWithoutFeedback onPress={selectMethod(item)}>
+                                <Text style={[styles.input, styles.modalInput]}>{item}</Text>
+                            </TouchableWithoutFeedback>
+                        )
+                    }}
+                    keyExtractor={(item, index) => index + item}
+                />
+            </Dialog>
+
+            <Text style={styles.header}>Glassware</Text>
+            <GlassCard style={[styles.inputArea, styles.input]} select={setGlassDialogVisible.bind(this, true)} glass={glass} />
+
+            <Dialog visible={glassDialogVisible}>
+                <FlatList
+                    data={availableGlasses}
+                    renderItem={({ item, index }) => <GlassCard select={selectGlass(item)} glass={item} />}
+                    keyExtractor={(item, index) => index + item}
+                />
+            </Dialog>
+
+
+            <Text style={styles.header}>Information</Text>
+            <TextInput
+                value={info}
+                multiline={true}
+                style={[styles.input, styles.inputArea, { textAlignVertical: 'top' }]}
+                numberOfLines={4}
+                onChange={setInfo}
+            />
+
+            <View style={styles.buttons}>
+                <Button title="Save" onPress={save} />
+                <Button title="Cancel" onPress={cancel} />
+            </View>
+
+
         </View >
     )
 
@@ -299,7 +292,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 5,
     },
-
+    inputArea: {
+        marginLeft: 30
+    },
     input: {
         fontFamily: 'Alegreya_500Medium',
         fontSize: 20,
@@ -307,7 +302,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 3,
         paddingLeft: 10,
-        marginLeft: 30
     },
     modalInput: {
         marginLeft: 0,
@@ -343,87 +337,4 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-
-
-
-    //         // .content > * {
-    //         //     width: 90 %;
-    //         // }
-
-    // input, select, textarea {
-    //     font - family: 'Alegreya', serif;
-    // font - size: 14pt;
-    // padding - top: 3px;
-    // padding - left: 5px;
-    // border - radius: 5px;
-    // border: 1px solid gray;
-    // }
-
-    // .ingredientRow {
-    //     display: flex;
-    //     margin - top: 3px;
-    //     align - items: center;
-    // }
-
-    // .dot {
-    //     width: 10px;
-    //     height: 10px;
-    //     margin - right: 5px;
-    // }
-
-    // .ingredientAmountInput {
-    //     width: 3em;
-    //     margin - right: 3px;
-    // }
-
-    // .ingredientNameInput {
-    //     flex - grow: 1;
-    // }
-
-    // .addIngredientButton {
-    //     margin - left: 3px;
-    // }
-
-    // textarea {
-    //     height: 6em;
-    //     resize: vertical;
-    // }
-
-    // .buttons {
-    //     display: flex;
-    //     justify - content: space - around;
-    // }
-
-    // .buttons > button {
-    //     border: 2px solid black;
-    //     border - radius: 5px;
-    //     background - color: white;
-
-    //     font - family: 'Cherry Cream Soda';
-    //     font - size: 18pt;
-
-    //     box - shadow: 2px 2px gray;
-    //     outline: none;
-    // }
-
-    // .buttons > button: active {
-    //     background - color: lightgray;
-    // }
-
-    // /* GLASS SELECTOR */
-
-    // .glassImg {
-    //     box - sizing: border - box;
-    //     max - width: 60px;
-    //     margin - left: 10px;
-    //     border: 2px solid white;
-    // }
-
-    // .selectedGlassImg {
-    //     border: 2px solid black;
-    //     border - radius: 5px;
-    //     box - shadow: 3px 3px gray;
-    //     outline: none;
-    // }
-    // })
 })
