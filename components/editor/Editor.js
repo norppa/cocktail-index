@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList, Image } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, FlatList, ScrollView } from 'react-native'
 import { useFonts, CherryCreamSoda_400Regular } from '@expo-google-fonts/cherry-cream-soda'
 import {
     Alegreya_400Regular,
@@ -157,7 +157,7 @@ const Editor = (props) => {
     }
 
     return (
-        <View style={styles.editor}>
+        <ScrollView style={styles.editor}>
 
             <Text style={styles.header}>Name</Text>
             <TextInput style={[styles.inputArea, styles.input]} value={name} onChange={setName} />
@@ -219,7 +219,7 @@ const Editor = (props) => {
             </View>
 
 
-        </View >
+        </ScrollView>
     )
 
 }
@@ -230,7 +230,8 @@ const styles = StyleSheet.create({
     editor: {
         marginTop: 30,
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10,
+        marginBottom: 30
     },
     text: {
         fontFamily: 'Alegreya_500Medium',
