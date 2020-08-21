@@ -24,7 +24,7 @@ import {
     saveNewIngredient,
     getAvailable,
     saveCocktail
-} from '../../rest'
+} from '../../tools'
 
 const emptyIngredient = { name: '', amount: '' }
 
@@ -73,7 +73,7 @@ const Editor = (props) => {
     /*
     *  Ingredient list has always an empty item at the end. 
     */
-    const setIngredient = (index, parameter, value) => {
+    const setIngredient = (index) => (parameter, value) => {
         let newIngredients = ingredients.map((ingredient, i) => {
             if (i == index) {
                 return { ...ingredient, [parameter]: value }
@@ -114,8 +114,6 @@ const Editor = (props) => {
     }
 
     const save = async () => {
-        return false
-
         if (ingredients.some(ingredient => ingredient.isNew)) {
             console.error('cant save with new ingredients')
             return
@@ -135,7 +133,7 @@ const Editor = (props) => {
             return console.error('could not save cocktail, error status:', error)
         }
 
-        props.close(true)
+        props.closeEditor(true)
     }
 
     const cancel = () => {
@@ -151,7 +149,7 @@ const Editor = (props) => {
         setGlass(glass)
         setGlassDialogVisible(false)
     }
-    
+
     if (!fontsLoaded) {
         return <Text>loading fonts...</Text>
     }
@@ -163,12 +161,12 @@ const Editor = (props) => {
             <TextInput style={[styles.inputArea, styles.input]} value={name} onChange={setName} />
 
             <Text style={styles.header}>Ingredients</Text>
-            <FlatList
-                style={styles.inputArea}
-                data={ingredients}
-                keyExtractor={(item, index) => item.id + '_ingredient_' + index}
-                renderItem={listItem => <IngredientInput style={styles.input} item={listItem} onChange={setIngredient} />}
-            />
+            <View style={styles.inputArea}>
+                {ingredients.map((ingredient, i) => <IngredientInput key={i}
+                    style={styles.input}
+                    ingredient={ingredient}
+                    onChange={setIngredient(i)} />)}
+            </View>
 
             <Text style={styles.header}>Garnish</Text>
             <TextInput style={[styles.inputArea, styles.input]} value={garnish} onChange={setGarnish} />

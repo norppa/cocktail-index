@@ -8,7 +8,7 @@ import {
   getCocktails,
   readLocalStore,
   writeLocalStore
-} from './rest'
+} from './tools'
 
 
 export default function App() {
@@ -43,7 +43,7 @@ export default function App() {
 
   const closeEditorView = (withReload) => {
     if (withReload) {
-      initializeCocktails()
+      initialize()
     }
     setEditorView(false)
   }
@@ -51,6 +51,7 @@ export default function App() {
   const openEditorView = () => {
     setEditorView(true)
   }
+  console.log('reload')
 
   if (editorView) {
     return <Editor cocktail={cocktails[selected]} 

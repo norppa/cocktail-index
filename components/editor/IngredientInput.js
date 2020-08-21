@@ -2,10 +2,10 @@ import React from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList, Image } from 'react-native'
 
 const IngredientInput = (props) => {
-    const {item: {name, amount, isNew}, index} = props.item
+    const {name, amount, isNew} = props.ingredient
 
-    const onChangeAmount = (value) => props.onChange(index, 'amount', value)
-    const onChangeName = (value) => props.onChange(index, 'name', value)
+    const onChangeAmount = (value) => props.onChange('amount', value)
+    const onChangeName = (value) => props.onChange('name', value)
     
     return (
         <View style={styles.ingredientInput}>
