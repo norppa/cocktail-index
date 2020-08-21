@@ -16,16 +16,15 @@ import {
 
 
 import IngredientInput from './IngredientInput'
-import Input from './Input'
+import EditorButton from './EditorButton'
 import Dialog from './Dialog'
+import GlassCard from './GlassCard'
 
 import {
     saveNewIngredient,
     getAvailable,
     saveCocktail
 } from '../../rest'
-
-import images from '../../img/images'
 
 const emptyIngredient = { name: '', amount: '' }
 
@@ -52,7 +51,6 @@ const Editor = (props) => {
             setAvailableGlasses(await getAvailable('glasses'))
             setAvailableMethods(await getAvailable('methods'))
         }
-
         loadCocktailInfo()
         fetchadditionalInfo()
 
@@ -144,34 +142,6 @@ const Editor = (props) => {
         props.closeEditor(false)
     }
 
-    if (!fontsLoaded) {
-        return <Text>loading fonts...</Text>
-    }
-
-    const Button = (props) => {
-        return (
-            <TouchableHighlight style={styles.button}
-                activeOpacity={0.6}
-                underlayColor="#DDDDDD"
-                onPress={props.onPress}>
-                <Text style={styles.buttonText}>{props.title}</Text>
-            </TouchableHighlight>
-        )
-    }
-
-    const GlassCard = (props) => {
-        return (
-            <TouchableWithoutFeedback onPress={props.select}>
-                <View style={[props.style, styles.glassCard]}>
-                    <Image style={styles.glassImg} source={images[props.glass]} />
-                    <Text style={styles.text}>{props.glass}</Text>
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
-
-
-
     const selectMethod = (method) => () => {
         setMethod(method)
         setMethodDialogVisible(false)
@@ -180,6 +150,10 @@ const Editor = (props) => {
     const selectGlass = (glass) => () => {
         setGlass(glass)
         setGlassDialogVisible(false)
+    }
+    
+    if (!fontsLoaded) {
+        return <Text>loading fonts...</Text>
     }
 
     return (
@@ -195,30 +169,6 @@ const Editor = (props) => {
                 keyExtractor={(item, index) => item.id + '_ingredient_' + index}
                 renderItem={listItem => <IngredientInput style={styles.input} item={listItem} onChange={setIngredient} />}
             />
-
-            {/* 
-                    {ingredients.map((ingredient, index) => {
-                        const { name, amount, isNew } = ingredient
-                        return (
-                            <div className={styles.ingredientRow} key={index}>
-                                <img src={images.dot} className={styles.dot} />
-                                <input type="text"
-                                    className={styles.ingredientAmountInput}
-                                    value={amount}
-                                    onChange={onIngredientAmountChange(index)} />
-                                <Autocomplete
-                                    options={availableIngredients}
-                                    value={ingredient}
-                                    onChange={onIngredientNameChange(index)} />
-                                {
-                                    isNew &&
-                                    <button className={styles.addIngredientButton}
-                                        onClick={addIngredient.bind(this, index)}>+</button>
-                                }
-                            </div>
-                        )
-                    })}
-             */}
 
             <Text style={styles.header}>Garnish</Text>
             <TextInput style={[styles.inputArea, styles.input]} value={garnish} onChange={setGarnish} />
@@ -264,8 +214,8 @@ const Editor = (props) => {
             />
 
             <View style={styles.buttons}>
-                <Button title="Save" onPress={save} />
-                <Button title="Cancel" onPress={cancel} />
+                <EditorButton title="Save" onPress={save} />
+                <EditorButton title="Cancel" onPress={cancel} />
             </View>
 
 
@@ -309,32 +259,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-
     buttons: {
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-around'
-    },
-    button: {
-        width: '40%',
-        borderWidth: 3,
-        borderRadius: 5,
-        padding: 5,
-        alignItems: 'center',
-    },
-    buttonText: {
-        fontFamily: 'CherryCreamSoda_400Regular',
-        fontSize: 24
-    },
-    glassImg: {
-        width: 50,
-        height: 50,
-        resizeMode: 'contain',
-        marginRight: 10,
-    },
-    glassCard: {
-        borderWidth: 0,
-        flexDirection: 'row',
-        alignItems: 'center',
     },
 })
