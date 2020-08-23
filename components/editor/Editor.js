@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, FlatList, ScrollView } from 'react-native'
 import { useFonts, CherryCreamSoda_400Regular } from '@expo-google-fonts/cherry-cream-soda'
-import {
-    Alegreya_400Regular,
-    Alegreya_400Regular_Italic,
-    Alegreya_500Medium,
-    Alegreya_500Medium_Italic,
-    Alegreya_700Bold,
-    Alegreya_700Bold_Italic,
-    Alegreya_800ExtraBold,
-    Alegreya_800ExtraBold_Italic,
-    Alegreya_900Black,
-    Alegreya_900Black_Italic
-} from '@expo-google-fonts/alegreya'
+import { Alegreya_500Medium, Alegreya_700Bold, } from '@expo-google-fonts/alegreya'
 
 
 import IngredientInput from './IngredientInput'
@@ -232,8 +221,9 @@ const styles = StyleSheet.create({
     editor: {
         marginTop: 30,
         marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 30
+        marginRight: 0,
+        marginBottom: 30,
+        paddingRight: 15
     },
     text: {
         fontFamily: 'Alegreya_500Medium',

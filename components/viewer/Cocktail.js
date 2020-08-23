@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderWidth: 1,
         borderColor: 'black',
-        borderRadius: 5,
+        borderRadius: 10,
         marginVertical: 5,
         padding: 10
     },
