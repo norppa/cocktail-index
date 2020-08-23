@@ -1,17 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, FlatList, Image } from 'react-native'
+import IngredientNameDialog from './IngredientNameDialog'
 
 const IngredientInput = (props) => {
-    const {name, amount, isNew} = props.ingredient
+    const [nameDialogVisible, setNameDialogVisible] = useState(false)
+    const { name, amount, isNew } = props.ingredient
 
-    const onChangeAmount = (value) => props.onChange('amount', value)
-    const onChangeName = (value) => props.onChange('name', value)
-    
+    const onChangeAmount = (amount) => props.updateIngredient({ amount })
+    const onChangeName = (name) => props.updateIngredient({ name })
+
     return (
         <View style={styles.ingredientInput}>
             <Text style={styles.dot}>{`\u2022`}</Text>
             <TextInput style={[props.style, styles.amountInput]} value={amount} onChangeText={onChangeAmount} />
-            <TextInput style={[props.style, styles.nameInput]}  value={name} onChangeText={onChangeName} />
+            <View style={styles.nameInputArea}>
+                <Text style={[props.style, styles.nameInput, isNew ? styles.newName : null]} onPress={setNameDialogVisible.bind(this, true)}>{name}</Text>
+                {isNew && <AddIngredientButton />}
+            </View>
+
+            <IngredientNameDialog visible={nameDialogVisible}
+                name={name}
+                onChangeName={onChangeName}
+                availableIngredients={props.availableIngredients}
+                updateIngredient={props.updateIngredient}
+                close={setNameDialogVisible.bind(this, false)}
+            />
+
         </View>
     )
 }
@@ -27,11 +41,25 @@ const styles = StyleSheet.create({
         fontSize: 28
     },
     amountInput: {
-        flex: 1,
-        marginLeft: 5
+        marginLeft: 5,
+        flex: 2
     },
     nameInput: {
-        flex: 4,
-        marginLeft: 5
+        marginLeft: 5,
+        flex: 10
+    },
+    newName: {
+        backgroundColor: 'gray',
+        borderWidth: 2
+    },
+    addIngredientBtn: {
+        textAlign: 'center',
+        marginLeft: 5,
+        flex: 1,
+        padding: 0
+    },
+    nameInputArea: {
+        flexDirection: 'row',
+        flex: 10,
     }
 })

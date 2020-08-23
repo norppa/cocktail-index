@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         opacity: 1,
-        minWidth: '50%',
-        minHeight: '50%'
+        width: '70%',
+        minHeight: '70%'
 
     },
 

@@ -73,14 +73,17 @@ const Editor = (props) => {
     /*
     *  Ingredient list has always an empty item at the end. 
     */
-    const setIngredient = (index) => (parameter, value) => {
+    const updateIngredient = (index) => (ingredientPart) => {
         let newIngredients = ingredients.map((ingredient, i) => {
             if (i == index) {
-                return { ...ingredient, [parameter]: value }
+                return { ...ingredient, ...ingredientPart }
             } else {
                 return ingredient
             }
         })
+
+        // remove all empty ingredients except the last
+        newIngredients = newIngredients.filter((x, i) => i == newIngredients.length - 1 || x.name != '' || x.amount != '')
 
         // if a property value was added to the last item, create a new empty last item
         if (index == ingredients.length - 1) {
@@ -165,7 +168,8 @@ const Editor = (props) => {
                 {ingredients.map((ingredient, i) => <IngredientInput key={i}
                     style={styles.input}
                     ingredient={ingredient}
-                    onChange={setIngredient(i)} />)}
+                    availableIngredients={availableIngredients}
+                    updateIngredient={updateIngredient(i)} />)}
             </View>
 
             <Text style={styles.header}>Garnish</Text>
