@@ -146,11 +146,15 @@ const Editor = (props) => {
         return <Text>loading fonts...</Text>
     }
 
+    const test = (x) => {
+        console.log('test', x)
+    }
+
     return (
         <ScrollView style={styles.editor}>
 
             <Text style={styles.header}>Name</Text>
-            <TextInput style={[styles.inputArea, styles.input]} value={name} onChange={setName} />
+            <TextInput style={[styles.inputArea, styles.input]} value={name} onChangeText={setName} />
 
             <Text style={styles.header}>Ingredients</Text>
             <View style={styles.inputArea}>
@@ -162,7 +166,7 @@ const Editor = (props) => {
             </View>
 
             <Text style={styles.header}>Garnish</Text>
-            <TextInput style={[styles.inputArea, styles.input]} value={garnish} onChange={setGarnish} />
+            <TextInput style={[styles.inputArea, styles.input]} value={garnish} onChangeText={setGarnish} />
 
             <Text style={styles.header}>Method</Text>
             <TouchableWithoutFeedback onPress={setMethodDialogVisible.bind(this, true)}>
@@ -201,7 +205,7 @@ const Editor = (props) => {
                 multiline={true}
                 style={[styles.input, styles.inputArea, { textAlignVertical: 'top' }]}
                 numberOfLines={4}
-                onChange={setInfo}
+                onChangeText={setInfo}
             />
 
             <View style={styles.buttons}>
