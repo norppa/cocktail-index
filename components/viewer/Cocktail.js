@@ -63,53 +63,53 @@ const Cocktail = (props) => {
         return <CocktailText style={styles.infoText}>{props.cocktail.info}</CocktailText>
     }
 
-    const AdditionalInfo = () => {
-        if (!showAdditionalInfo) {
-            return null
+    const GlassImg = () => {
+        if (props.cocktail.glass) {
+            return <Image style={styles.glassImg} source={images[props.cocktail.glass]} alt={props.cocktail.glass} />
         }
 
+    }
+    if (!fontsLoaded) {
+        return null
+    }
+
+    if (!showAdditionalInfo) {
         return (
-            <View style={styles.additionalInfo}>
-                <View style={styles.row}>
-                    <View style={styles.ingredientsCol}>
-                        <FlatList
-                            style={styles.ingredients}
-                            data={props.cocktail.ingredients}
-                            keyExtractor={(item, index) => item.id + '_ingredient_' + index}
-                            renderItem={({ item }) => {
-                                return <CocktailText style={styles.ingredient}>{`\u2022 ${item.amount} ${item.name}`} </CocktailText>
-                            }}
-                        />
-
-                        <GarnishText />
-                    </View>
-                    <View style={styles.instructionsCol}>
-                        {
-                            props.cocktail.glass &&
-                            <Image style={styles.glassImg} source={images[props.cocktail.glass]} alt={props.cocktail.glass} />
-                        }
-                        <Text style={styles.method}> {props.cocktail.method}</Text>
-                    </View>
+            <TouchableWithoutFeedback onPress={handleClick}>
+                <View style={[styles.itemCard, props.selected ? styles.selected : null]}>
+                    <Text style={styles.name}>{props.cocktail.name}</Text>
                 </View>
+            </TouchableWithoutFeedback>
+        )
+    } else {
+        return (
+            <TouchableWithoutFeedback onPress={handleClick}>
+                <View style={[styles.itemCard, props.selected ? styles.selected : null]}>
+                    <View style={styles.headerRow}>
+                        <Text style={styles.header}>{props.cocktail.name}</Text>
+                        <View style={styles.instructions}>
+                            <GlassImg />
+                            <Text style={styles.method}> {props.cocktail.method}</Text>
+                        </View>
+                    </View>
 
-                <InfoText />
+                    <FlatList
+                        style={styles.ingredients}
+                        data={props.cocktail.ingredients}
+                        keyExtractor={(item, index) => item.id + '_ingredient_' + index}
+                        renderItem={({ item }) => {
+                            return <CocktailText style={styles.ingredient}>{`\u2022 ${item.amount} ${item.name}`} </CocktailText>
+                        }}
+                    />
 
-            </View>
+                    <GarnishText />
+
+                    <InfoText />
+
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
-
-    if (!fontsLoaded) {
-        return <Text>Loading Fonts...</Text>
-    }
-
-    return (
-        <TouchableWithoutFeedback onPress={handleClick}>
-            <View style={[styles.itemCard, props.selected ? styles.selected : null]}>
-                <Text style={styles.name}>{props.cocktail.name}</Text>
-                <AdditionalInfo />
-            </View>
-        </TouchableWithoutFeedback>
-    )
 
 }
 
@@ -117,24 +117,37 @@ export default Cocktail
 
 const styles = StyleSheet.create({
     itemCard: {
-        width: '100%',
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
         marginVertical: 5,
         padding: 10
     },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    instructions: {
+        alignItems: 'center',
+        marginRight: 2
+    },
     name: {
         fontFamily: 'CherryCreamSoda_400Regular',
         fontSize: 24,
-        marginBottom: 5
+    },
+    header: {
+        fontFamily: 'CherryCreamSoda_400Regular',
+        fontSize: 26,
+        flex: 1,
     },
     cocktailText: {
         fontFamily: 'Alegreya_500Medium',
         fontSize: 22
     },
     ingredients: {
-        marginLeft: 10
+        marginLeft: 10,
+        marginBottom: 3
     },
     infoText: {
         marginTop: 10
@@ -144,21 +157,9 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain'
     },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    instructionsCol: {
-        flexDirection: 'column',
-        position: 'relative',
-        bottom: 30,
-        alignItems: 'center',
-        marginBottom: -30,
-    },
     method: {
         fontFamily: 'Alegreya_700Bold',
-        fontSize: 18
-
+        fontSize: 18,
     },
     selected: {
         borderWidth: 3
