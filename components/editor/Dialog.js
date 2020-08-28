@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View,  Modal,  } from 'react-native'
+import { StyleSheet, View, Modal, TouchableWithoutFeedback, } from 'react-native'
 
 const Dialog = (props) => {
     return (
@@ -7,13 +7,11 @@ const Dialog = (props) => {
             animationType="slide"
             transparent={true}
             visible={props.visible}>
-
-            <View style={styles.modalContainer}>
-                <View style={styles.modal}>
-                    {props.children}
+                <View style={styles.modalContainer}>
+                    <View style={styles.modal}>
+                        {props.children}
+                    </View>
                 </View>
-            </View>
-
         </Modal>
     )
 }

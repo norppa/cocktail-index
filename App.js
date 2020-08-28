@@ -51,7 +51,6 @@ export default function App() {
   const openEditorView = () => {
     setEditorView(true)
   }
-  console.log('reload')
 
   if (editorView) {
     return <Editor cocktail={cocktails[selected]} 
